@@ -36,12 +36,58 @@ const EventCreatePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post('http://localhost:4002/eventos', formData);
-      // Redirecione ou faça outras ações após a criação bem-sucedida
-    } catch (error) {
-      console.error('Erro ao criar evento:', error);
-    }
+      // const userData = {
+      //   nome: formData.nome,
+      //   data: formData.data,
+      //   descricao: formData.descricao,
+      //   categoriaId: formData.categoriaId, // Removido valor padrão
+      //   localId: formData.localId,
+      // }
+      // await axios.post('http://localhost:4002/eventos', userData, {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // })
+      // .then((response) => {
+      //   console.log(response);
+      // })
+      // .catch((error) => {
+      //   console.log(error)
+      // })
+      const datat = {
+        nome: `${formData.nome}`,
+        data: `${formData.data + ':00Z'}`,
+        descricao: `${formData.descricao}`,
+        categoriaId: formData.categoriaId,
+        localId: formData.localId,
+      };
+
+      const regex = /"(-|)([0-9]+(?:\.[0-9]+)?)"/g ;
+      let strin = JSON.stringify(datat);
+      strin = strin.replace(regex, '$1$2');
+      console.log(strin);
+
+      fetch('http://localhost:4002/eventos', {
+        method: 'POST',
+        body: strin,
+        headers: {
+          'Content-type' : 'application/json; charset=UTF-8',
+        },
+      })
+      .then(function(response){
+        if(response.ok){
+          console.log(response.text())
+        }
+
+        throw new Error('deu algo errado!!');
+      })
+      .then(function(text) {
+        console.log('request sucess');
+      })
+      .then((json) => console.log())
+      .catch(function(error) {
+        console.log('request error');
+      })
   };
 
   return (
@@ -54,7 +100,7 @@ const EventCreatePage = () => {
         </label>
         <label>
           Data:
-          <input type="date" name="data" value={formData.data} onChange={handleChange} />
+          <input type="datetime-local" name="data" value={formData.data} onChange={handleChange} />
         </label>
         <label>
           Descrição:

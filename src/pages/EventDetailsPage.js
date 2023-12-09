@@ -10,13 +10,13 @@ const EventDetailsPage = () => {
     const fetchEventDetails = async () => {
       try {
         // Verifica se o eventId é uma string válida antes de fazer a solicitação
-        if (!eventId || eventId === 'undefined') {
-          console.error('ID do evento não fornecido');
-          return;
-        }
+        // if (!eventId || eventId === 'undefined') {
+        //   console.error('ID do evento não fornecido');
+        //   return;
+        // }
 
         // Faz a solicitação para obter detalhes do evento com o ID fornecido
-        const response = await axios.get(`http://localhost:4002/eventos/${eventId}`);
+        const response = await axios.get(`http://localhost:4002/eventos/`);
 
         // Define os detalhes do evento no estado
         setEventDetails(response.data);

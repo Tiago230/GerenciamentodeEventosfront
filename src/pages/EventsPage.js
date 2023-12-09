@@ -4,12 +4,28 @@ import { Link } from 'react-router-dom';
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
+  const [categoria, setCategorias] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get('http://localhost:4002/eventos');
+        const resp = await axios.get('http://localhost:4002/categorias');
+        let dad = resp.data;
+        let dad1 = response.data;
+        dad.map((element) => {
+          dad.map((el) => {
+            let idcategoria = el.id
+            dad1.map((teste) => {
+              if(teste.categoriaId == idcategoria){
+                let d = JSON.stringify(el.nome);
+                setCategorias(d);
+              }
+            });
+          });
+        });
+
         setEvents(response.data);
       } catch (error) {
         console.error('Erro ao obter lista de eventos:', error);
@@ -22,11 +38,21 @@ const EventsPage = () => {
   const handleSearch = async () => {
     try {
       const response = await axios.get(`http://localhost:4002/eventos?search=${searchTerm}`);
-      setEvents(response.data);
+      console.log(`http://localhost:4002/eventos?search=${searchTerm}`);
+      let dados = response.data
+      let filtrados = checknome(dados)
+      setEvents(filtrados);
     } catch (error) {
       console.error('Erro ao buscar eventos:', error);
     }
   };
+
+  function checknome(e){
+    let fil = e.filter(function(e){
+      return e.nome == searchTerm
+    })
+    return fil
+  }
 
   return (
     <div>
@@ -41,7 +67,7 @@ const EventsPage = () => {
       <ul>
         {events.map((event) => (
           <li key={event.id}>
-            <Link to={`/events/${event.id}`}>{event.nome}</Link>
+            <p>Nome: {event.nome}/<br /> Data: {event.data} / <br /> Descrição: {event.descricao}/<br />Categoria: {event.categoriaId = '1' ? 'Musica': event.categoriaId = '2' ? 'Dança': ''}</p>
           </li>
         ))}
       </ul>
